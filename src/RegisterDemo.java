@@ -68,6 +68,6 @@ public class RegisterDemo
 		grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
 		System.out.println(register.print(grocery));
 		// No more paper! An exception will be thrown.
-		//test
+		
 	}
 }

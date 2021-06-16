@@ -6,10 +6,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="Tests"/>
 	<classpathentry kind="lib" path="dep/kwikemart-register.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/Kwick-E-Market/dep/kwikemart-register.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
