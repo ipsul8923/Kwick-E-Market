@@ -10,6 +10,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.runner.notification.Failure;
 
 import stev.kwikemart.AmountException;
 import stev.kwikemart.InvalidQuantityException;
@@ -20,6 +21,13 @@ import stev.kwikemart.StoreException;
 import stev.kwikemart.Upc;
 
 /*
+ *
+ * @author Nicolas_Kerneis (KERN08049808), Nesrine_Chekou(CHEN04619700), David_Lhullier(LHUD14029704 ), Vincent Vanbalberghe(VANV20019704)
+ * 
+ * 
+ * Le récapitulatif des informations est disponible dans le fichier googleSheet suivant : https://docs.google.com/spreadsheets/d/1cPd9vzdvoahySq95WYiF_o4gW4YOdTzs1c3JMQwRRQg/edit?usp=sharing
+ * 
+ * 
  * Montant
  * 
  * Valide :
@@ -95,7 +103,7 @@ import stev.kwikemart.Upc;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RegisterTest {
 
-	
+
 	String amountTooBigException = "Exception for item 123456789012: the amount exceeds the maximum value allowed by the register";
 	String amountNegativeException = "Exception for item 123456789012: the amount is negative";
 	String quantityNegativeException ="Item 123456789012 is not already in the list";
@@ -116,13 +124,13 @@ class RegisterTest {
 
 	Register register = Register.getRegister();
 	List<Item> grocery;
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	@BeforeEach
 	void setUp() throws Exception{
 		grocery = new ArrayList<Item>();
@@ -133,122 +141,142 @@ class RegisterTest {
 		grocery.clear();
 
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
-	 * 
+	 * Une fois les PCE déterminées, on crée les combinaisons de classes valides pour tous les paramètres 
+	 * jusqu'à ce que tous les ensembles aient été inclus au moins une fois. Les tests 1 à 5 correspondent à ces combinaisons
+	 * On teste ensuite chaque classe invalide de chaque paramètre individuellement, en donnant une valeur valide quelconque aux autres paramètres.
+	 * Les tests 6 à 23 correspondent à ces combinaisons.
 	 */
+	
 	@Test
 	@Order(1)
 	void test1() {
-		
-		register.changePaper(PaperRoll.SMALL_ROLL);//V10
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 1.5)); //V1, V2
-		grocery.add(new Item(Upc.generateCode("64748119599"), "Chewing gum", 0, 0.99));
-		grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
-		grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
-		grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));//V5, V13
-		grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-		//V12
-		//V18
-		//V19
-		System.out.println(register.print(grocery));
+		try {
+			register.changePaper(PaperRoll.SMALL_ROLL);//V10
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 1.5)); //V1, V2
+			grocery.add(new Item(Upc.generateCode("64748119599"), "Chewing gum", 0, 0.99));
+			grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
+			grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
+			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));//V5, V13
+			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
+			//V12
+			//V18
+			//V19
+			System.out.println(register.print(grocery));
+		} catch (Exception e) {
+			fail("Le test 1 a échoué");
+		}
 	}
 
-	
-	
+
+
 	@Test
 	@Order(2)
 	void test2() {
-		register.changePaper(PaperRoll.LARGE_ROLL);//V11
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 1.5)); //V1,V6
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", -1, 1.5)); //V3 V20
-		grocery.add(new Item(Upc.generateCode("64748119599"), "Chewing gum", 0, 0.99));
-		grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
-		grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
-		grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
-		grocery.add(new Item(Upc.generateCode("54323432333"), "Chewing gum discount", 1, 0.3));//14
-		grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-		//V12
-		//V18
-		System.out.println(register.print(grocery));
+		try {
+			register.changePaper(PaperRoll.LARGE_ROLL);//V11
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 1.5)); //V1,V6
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", -1, 1.5)); //V3 V20
+			grocery.add(new Item(Upc.generateCode("64748119599"), "Chewing gum", 0, 0.99));
+			grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
+			grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
+			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
+			grocery.add(new Item(Upc.generateCode("54323432333"), "Chewing gum discount", 1, 0.3));//14
+			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
+			//V12
+			//V18
+			System.out.println(register.print(grocery));
+		} catch (Exception e) {
+			fail("Le test 2 a échoué");
+		}
 	}
-	
-	
+
+
 	@Test
 	@Order(3)
 	void test3() {
-		register.changePaper(PaperRoll.LARGE_ROLL);//V11
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 1.5)); //V1
-		grocery.add(new Item(Upc.generateCode("22804918500"), "Beef", 0.5, 5.75)); //V4, V7
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", -1, 1.5)); //V20
-		grocery.add(new Item(Upc.generateCode("64748119599"), "Chewing gum", 0, 0.99));
-		grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
-		grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
-		grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));//v15
-		grocery.add(new Item(Upc.generateCode("54323432333"), "Chewing gum discount", 1, 0.3));//V15
-		grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-		//V12
-		//V18
-		System.out.println(register.print(grocery));
+		try {
+			register.changePaper(PaperRoll.LARGE_ROLL);//V11
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 1.5)); //V1
+			grocery.add(new Item(Upc.generateCode("22804918500"), "Beef", 0.5, 5.75)); //V4, V7
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", -1, 1.5)); //V20
+			grocery.add(new Item(Upc.generateCode("64748119599"), "Chewing gum", 0, 0.99));
+			grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
+			grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
+			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));//v15
+			grocery.add(new Item(Upc.generateCode("54323432333"), "Chewing gum discount", 1, 0.3));//V15
+			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
+			//V12
+			//V18
+			System.out.println(register.print(grocery));
+		} catch (Exception e) {
+			fail("Le test 3 a échoué");
+		}
 	}
-	
+
 	@Test
 	@Order(4)
 	void test4() {
-		register.changePaper(PaperRoll.LARGE_ROLL);//V11
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 1.5)); //V1
-		grocery.add(new Item(Upc.generateCode("22804918500"), "Beef", 0.5, 5.75)); //V4, V8
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", -1, 1.5)); //V20
-		grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
-		grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
-		grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));//v16
-		grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-		//V12
-		//V18
-		System.out.println(register.print(grocery));
+		try {
+			register.changePaper(PaperRoll.LARGE_ROLL);//V11
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 1.5)); //V1
+			grocery.add(new Item(Upc.generateCode("22804918500"), "Beef", 0.5, 5.75)); //V4, V8
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", -1, 1.5)); //V20
+			grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
+			grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
+			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));//v16
+			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
+			//V12
+			//V18
+			System.out.println(register.print(grocery));
+		} catch (Exception e) {
+			fail("Le test 4 a échoué");
+		}
 	}
-	
-	
+
+
 	@Test
 	@Order(5)
 	void test5() {
-		register.changePaper(PaperRoll.LARGE_ROLL);//V11
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 1.5)); //V1
-		grocery.add(new Item(Upc.generateCode("22804918500"), "Beef", 0.5, 5.75)); //V4, V9
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", -1, 1.5)); //V20
-		grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
-		grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
-		grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
-		grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));//v17
-		grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-		//V12
-		//V18
-		System.out.println(register.print(grocery));
+		try {
+			register.changePaper(PaperRoll.LARGE_ROLL);//V11
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 1.5)); //V1
+			grocery.add(new Item(Upc.generateCode("22804918500"), "Beef", 0.5, 5.75)); //V4, V9
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", -1, 1.5)); //V20
+			grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
+			grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
+			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
+			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));//v17
+			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
+			//V12
+			//V18
+			System.out.println(register.print(grocery));
+		} catch (Exception e) {
+			fail("Le test 5 a échoué");
+		}
 	}
-	
-	
+
+
 	@Test
 	@Order(6)
 	void test6() {
 		register.changePaper(PaperRoll.LARGE_ROLL);
 		try {
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 50));//I1
-		grocery.add(new Item(Upc.generateCode("22804918500"), "Beef", 0.5, 5.75)); 
-		grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", -1, 1.5)); 
-		grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
-		grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
-		grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
-		grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
-		grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-		
-		System.out.println(register.print(grocery));
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 3, 50));//I1
+			grocery.add(new Item(Upc.generateCode("22804918500"), "Beef", 0.5, 5.75)); 
+			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", -1, 1.5)); 
+			grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
+			grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
+			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
+			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
+			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
+			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(amountTooBigException, e.getMessage());
-
+			assertEquals(amountTooBigException, e.getMessage());
 		}
 	}
 
@@ -265,17 +293,12 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-			
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(amountNegativeException, e.getMessage());
-
+			assertEquals(amountNegativeException, e.getMessage());
 		}
-		
-
 	}
-	
+
 	@Test
 	@Order(8)
 	void test8() {
@@ -288,20 +311,15 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-			
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(quantityNegativeException, e.getMessage());
+			assertEquals(quantityNegativeException, e.getMessage());
 		}
-		
-
 	}
-	
+
 	@Test
 	@Order(9)
 	void test9() {
-		
 		try {
 			register.changePaper(PaperRoll.LARGE_ROLL);
 			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 1.5, 1.5)); //I4
@@ -311,42 +329,31 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-			
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(quantityFractionnalException, e.getMessage());
+			assertEquals(quantityFractionnalException, e.getMessage());
 		}
-		
-		
-
 	}
-	
+
 	@Test
 	@Order(10)
 	void test10() {
-		
 		try {
 			register.changePaper(PaperRoll.LARGE_ROLL);
-			grocery.add(new Item(Upc.generateCode("12345678908"), "Bananas", 1, 1.5)); //I5 pas d'exception, a revoir 
+			grocery.add(new Item(Upc.generateCode("12345678908"), "Bananas", 1, 1.5)); //I5
 			grocery.add(new Item(Upc.generateCode("22804918500"), "Beef", 0.5, 5.75)); 
 			grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
 			grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-			
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(upcLastDigitException, e.getMessage());
+			assertEquals(upcLastDigitException, e.getMessage());
 		}
-		
-		
-
 	}
-	
-	
+
+
 	@Test
 	@Order(11)
 	void test11() {
@@ -359,17 +366,12 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-			
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(upcCaracterexception, e.getMessage());
+			assertEquals(upcCaracterexception, e.getMessage());
 		}
-		
-		
-
 	}
-	
+
 	@Test
 	@Order(12)
 	void test12() {
@@ -382,16 +384,12 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-			
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(upcVoidException, e.getMessage());
+			assertEquals(upcVoidException, e.getMessage());
 		}
-		
-
 	}
-	
+
 	@Test
 	@Order(13)
 	void test13() {
@@ -404,20 +402,16 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-			
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(upcLongException, e.getMessage());
+			assertEquals(upcLongException, e.getMessage());
 		}
-		
-		
 	}
-	
+
 	@Test
 	@Order(14)
 	void test14() {
-		
+
 		try {
 			register.changePaper(PaperRoll.LARGE_ROLL);
 			grocery.add(new Item(Upc.generateCode("15678901"), "Bananas", 1, 1.5)); //I9
@@ -427,18 +421,13 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-			
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(upcShortException, e.getMessage());
+			assertEquals(upcShortException, e.getMessage());
 		}
-		
-		
-
 	}
-	
-	
+
+
 	@Test
 	@Order(15)
 	void test15() {
@@ -451,24 +440,16 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", -1, 0.5));
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
-			
-			//System.out.println(register.print(grocery));
 			System.out.println(register.print(grocery));//I10
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(paperRollException, e.getMessage());
+			assertEquals(paperRollException, e.getMessage());
 		}
-		
-		
-
-
 	}
-	
-	
+
+
 	@Test
 	@Order(23)
 	void test16() {
-		
 		try {
 			register.changePaper(PaperRoll.LARGE_ROLL);
 			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 1, 1.5)); 
@@ -480,33 +461,25 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
 			for(int i=0; i<63; i++) {
 				System.out.println(register.print(grocery));}
-				//I11
-
+			//I11
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(paperRollException, e.getMessage());
+			assertEquals(paperRollException, e.getMessage());
 		}
-		
-
 	}
-	
-	
+
+
 	@Test
 	@Order(16)
 	void test17() {
 		try {
 			register.changePaper(PaperRoll.LARGE_ROLL);
 			System.out.println(register.print(grocery));//I12
-
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(voidListException, e.getMessage());
+			assertEquals(voidListException, e.getMessage());
 		}
-		
-		
 	}
-	
-	
+
+
 	@Test
 	@Order(17)
 	void test18() {	
@@ -518,26 +491,20 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("12345678904"), "Cherry", 1, 1.5)); 
 			grocery.add(new Item(Upc.generateCode("12345678905"), "Eggs", 1, 1.5)); 
 			grocery.add(new Item(Upc.generateCode("12345678906"), "Bread", 1, 1.5)); 
-			grocery.add(new Item(Upc.generateCode("12345678907"), "Chicken", 1, 1.5)); //Attention check les UPC 
+			grocery.add(new Item(Upc.generateCode("12345678907"), "Chicken", 1, 1.5));  
 			grocery.add(new Item(Upc.generateCode("22804918500"), "Beef", 0.5, 5.75)); 
 			grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.99));
 			grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 1.44));
 			grocery.add(new Item(Upc.generateCode("61519314159"), "Doritos", 1, 1.25));
 			System.out.println(register.print(grocery));//I13
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(tooLongListException, e.getMessage());
+			assertEquals(tooLongListException, e.getMessage());
 		}
-		
-		
-
-
 	}
-	
+
 	@Test
-		@Order(18)
+	@Order(18)
 	void test19() {
-		
 		try {
 			register.changePaper(PaperRoll.LARGE_ROLL);
 			grocery.add(new Item(Upc.generateCode("12345678901"), "Bananas", 1, 1.5)); 
@@ -548,18 +515,14 @@ class RegisterTest {
 			System.out.println(register.print(grocery));
 
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(couponNegativeAmountException, e.getMessage());
+			assertEquals(couponNegativeAmountException, e.getMessage());
 		}
-		
-		
-
 	}
-	
-	
-	
+
+
+
 	@Test
-		@Order(19)
+	@Order(19)
 	void test20() {
 		try {
 			register.changePaper(PaperRoll.LARGE_ROLL);
@@ -571,15 +534,11 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 0.5));//I15
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(couponSameUpcException, e.getMessage());
+			assertEquals(couponSameUpcException, e.getMessage());
 		}
-		
-		
-
 	}
-	
-	
+
+
 	@Test
 	@Order(20)
 	void test21() {
@@ -592,12 +551,11 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("54323432343"), "Doritos Club", 1, 15));//I16
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(couponAmountException, e.getMessage());
+			assertEquals(couponAmountException, e.getMessage());
 		}
 	}
-	
-	
+
+
 	@Test
 	@Order(21)
 	void test22() {
@@ -608,16 +566,15 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("44348225996"), "Gobstoppers", 1, 0.1));
 			grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 0.1));
 			grocery.add(new Item(Upc.generateCode("12345678905"), "Eggs", 1, 0.1)); 
-			//I17 Pas sur de pouvoir le faire apparaitre
+			//I17
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-			// ??
+			fail("Le test 22 a échoué.");
 		}
 	}
-	
-	
-	
+
+
+
 	@Test
 	@Order(22)
 	void test23() {
@@ -630,8 +587,7 @@ class RegisterTest {
 			grocery.add(new Item(Upc.generateCode("34323432343"), "Nerds", 2, 0.1));
 			System.out.println(register.print(grocery));
 		} catch (Exception e) {
-			// TODO: handle exception
-	        assertEquals(doubleItemException, e.getMessage());
+			assertEquals(doubleItemException, e.getMessage());
 		}
 	}
 }
